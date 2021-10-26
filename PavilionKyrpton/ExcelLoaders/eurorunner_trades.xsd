@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified" version="1.1.0">
+
+    <!-- Define simple data types that we may need to use more than once -->
+    <xs:simpleType name="char6">
+        <xs:restriction base="xs:token">
+            <xs:maxLength value="6"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="char20">
+        <xs:restriction base="xs:token">
+            <xs:maxLength value="20"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="char50">
+        <xs:restriction base="xs:token">
+            <xs:maxLength value="50"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="dateTimeNoTimeZone">
+        <xs:restriction base="xs:dateTime">
+            <xs:pattern value="[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9]"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="decimal2212Positive">
+        <xs:restriction base="xs:decimal">
+            <xs:minInclusive value="0"/>
+            <xs:totalDigits value="22"/>
+            <xs:fractionDigits value="12"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="decimal124">
+        <xs:restriction base="xs:decimal">
+            <xs:totalDigits value="12"/>
+            <xs:fractionDigits value="4"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="decimal124Positive">
+        <xs:restriction base="xs:decimal">
+            <xs:minInclusive value="0"/>
+            <xs:totalDigits value="12"/>
+            <xs:fractionDigits value="4"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="buySell">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="B"/>
+            <xs:enumeration value="S"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="amountType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="H"/>
+            <xs:enumeration value="D"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="firmness">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="F"/>
+            <xs:enumeration value="I"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="locationType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="F"/>
+            <xs:enumeration value="P"/>
+            <xs:enumeration value="J"/>
+            <xs:enumeration value="G"/>
+            <xs:enumeration value="W"/>
+            <xs:enumeration value="S"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="category">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="I"/>
+            <xs:enumeration value="R"/>
+            <xs:enumeration value="T"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="direction">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="N"/>
+            <xs:enumeration value="X"/>
+            <xs:enumeration value="B"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+
+    <!-- Define attribute groups -->
+    <xs:attributeGroup name="dateTimePeriod">
+        <xs:attribute name="start_dts" use="required" type="dateTimeNoTimeZone"/>
+        <xs:attribute name="end_dts" use="required" type="dateTimeNoTimeZone"/>
+    </xs:attributeGroup>
+
+    <xs:attributeGroup name="amountType">
+        <xs:attribute name="amount_type" use="required" type="amountType"/>
+        <xs:attribute name="unit" use="required" type="char6"/>
+        <xs:attribute name="temperature" use="required" type="char6"/>
+    </xs:attributeGroup>
+
+
+    <!-- Define common nomination/trade attribute groups -->
+    <xs:attributeGroup name="commonDetails">
+        <xs:attribute name="buy_sell" use="required" type="buySell"/>
+        <xs:attributeGroup ref="amountType"/>
+        <xs:attribute name="time_zone" use="required" type="char50"/>
+    </xs:attributeGroup>
+
+    <xs:attributeGroup name="amountPeriod">
+        <xs:attribute name="amount" use="required" type="decimal2212Positive"/>
+        <xs:attributeGroup ref="dateTimePeriod"/>
+    </xs:attributeGroup>
+
+
+    <!-- Define fixed trade data type -->
+    <xs:complexType name="fixedTradePeriod">
+        <xs:attribute name="flange" use="required" type="char50"/>
+        <xs:attributeGroup ref="amountPeriod"/>
+        <xs:attribute name="network" use="optional" type="char50"/>
+        <xs:attribute name="code" use="optional" type="char20"/>
+    </xs:complexType>
+
+    <xs:complexType name="fixedTrade">
+        <xs:choice minOccurs="1" maxOccurs="unbounded">
+			<xs:element name="period" type="fixedTradePeriod"/>
+		</xs:choice>
+        <xs:attributeGroup ref="commonDetails"/>
+        <xs:attribute name="contract" use="required" type="char50"/>
+        <xs:attribute name="trader" use="optional" type="char50"/>
+        <xs:attribute name="code" use="optional" type="char20"/>
+        <xs:attribute name="price" use="optional" type="decimal124"/>
+    </xs:complexType>
+
+    <xs:complexType name="fixedTradeDelete">
+        <xs:attribute name="code" use="required" type="char20"/>
+    </xs:complexType>
+
+
+    <!-- Define capacity trade data type -->
+    <xs:complexType name="capacityTrade">
+        <xs:attributeGroup ref="commonDetails"/>
+        <xs:attribute name="code" use="optional" type="char20"/>
+        <xs:attribute name="price" use="optional" type="decimal124Positive"/>
+        <xs:attributeGroup ref="amountPeriod"/>
+        <xs:attribute name="network" use="required" type="char50"/>
+        <xs:attribute name="shipper" use="optional" type="char50"/>
+        <xs:attribute name="book_name" use="optional" type="char50"/>
+        <xs:attribute name="trader" use="optional" type="char50"/>
+        <xs:attribute name="location_type" use="optional" type="locationType" default="F"/>
+        <xs:attribute name="location" use="required" type="char50"/>
+        <xs:attribute name="category" use="optional" type="category" default="T"/>
+        <xs:attribute name="direction" use="optional" type="direction"/>
+        <xs:attribute name="firmness" use="optional" type="firmness" default="F"/>
+        <xs:attribute name="comment" use="optional" type="char50"/>
+    </xs:complexType>
+
+    <xs:complexType name="capacityTradeDelete">
+        <xs:attribute name="code" use="required" type="char20"/>
+    </xs:complexType>
+
+
+    <!-- Define swing nomination data type -->
+    <xs:complexType name="swingNomination">
+        <xs:attributeGroup ref="commonDetails"/>
+        <xs:attribute name="contract" use="required" type="char50"/>
+        <xs:attribute name="flange" use="required" type="char50"/>
+        <xs:attribute name="capacity_type" use="optional" type="char50"/>
+        <xs:attributeGroup ref="dateTimePeriod"/>
+        <xs:attribute name="bdr" use="optional" type="decimal2212Positive"/>
+        <xs:attribute name="bro" use="optional" type="decimal2212Positive"/>
+        <xs:attribute name="network" use="optional" type="char50"/>
+    </xs:complexType>
+
+    <!-- Define trades data type -->
+    <xs:complexType name="trades">
+        <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:element name="fixed_trade" type="fixedTrade"/>
+            <xs:element name="fixed_trade_delete" type="fixedTradeDelete"/>
+            <xs:element name="capacity_trade" type="capacityTrade"/>
+            <xs:element name="capacity_trade_delete" type="capacityTradeDelete"/>
+            <xs:element name="swing_nomination" type="swingNomination"/>
+        </xs:choice>
+    </xs:complexType>
+
+
+    <!-- Root Element Definition -->
+    <xs:element name="eurorunner_trades" type="trades"/>
+
+</xs:schema>
