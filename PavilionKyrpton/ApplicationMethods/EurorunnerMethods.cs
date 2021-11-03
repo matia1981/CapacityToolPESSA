@@ -21,51 +21,50 @@ namespace PavilionKyrpton.ApplicationMethods
         }
 
 
-       public void GenerateXMLFile(int fileID)
+       public void GenerateXMLFile(List<string> items)
         {
-            var fileRows = _db.EnagasFiles
-                            .Where(x => x.FileId == fileID)
-                            .AsEnumerable<EnagasFile>();
-
             eurorunnerDataSet dInput = new eurorunnerDataSet();
 
-
-            foreach (var row in fileRows)
+            foreach (var row in items)
             {
+                var rowDB = _db.EnagasFiles
+                            .Where(x => x.CodigoContrato == row)
+                            .FirstOrDefault();
+
+                var location = _db.Locations
+                                .Where(x => x.EnagasLocation == rowDB.Infrastructura)
+                                .FirstOrDefault();
+
+
                 var newRow = dInput.capacity_trade.Newcapacity_tradeRow();
-                newRow.amount = row.QTotalContratada_Volume;
-                newRow.unit = row.QTotalContratada_Units.Substring(0, 3);
+
+                newRow.amount =      rowDB.QTotalContratada_Volume;
+                newRow.unit =        rowDB.QTotalContratada_Units.Substring(0, 3);
                 newRow.amount_type = "D";
 
-                newRow.buy_sell = "B";
-                //newRow.book_name = "prueba";
+                newRow.buy_sell    = "B";                
                 newRow.category = "T";
-                newRow.code = row.CodigoContrato;
-                
-                newRow.direction = FlowDirectionGenerationByRow(row);
-                
-                newRow.firmness = "F";
-                newRow.location = row.Infrastructura;
-                newRow.location_type = "F";
-                newRow.network = "PVB";
-                //newRow.price = 10;
-                newRow.shipper = row.Comercializador;
-                newRow.start_dts = row.InicioContracto;
-                newRow.end_dts = row.FinContracto;
+                newRow.code = rowDB.CodigoContrato;
 
-                newRow.temperature = "25";
-                newRow.time_zone = "CET";
+                newRow.direction = FlowDirectionGenerationByRow(rowDB);
+
+                newRow.firmness = "F";
+                newRow.location = location.EurorunnerLocation;
+                newRow.location_type = location.Location_Type;
+                newRow.network = location.Network;
+                
+                newRow.shipper = rowDB.Comercializador;
+                newRow.start_dts = rowDB.InicioContracto;
+                newRow.end_dts = rowDB.FinContracto;
+
+                newRow.temperature = location.Temperature;
+                newRow.time_zone = location.Timezone;
 
                 dInput.capacity_trade.Rows.Add(newRow);
-
             }
 
-
-
-            dInput.WriteXml(ConfigurationManager.AppSettings["eurorunnerfolder"] + @"\prueba.xml");
-
-
-
+            var fileName = System.DateTime.Now.ToFileTime();
+            dInput.WriteXml(ConfigurationManager.AppSettings["eurorunnerfolder"] + @"\" + fileName + ".xml");
         }
 
 

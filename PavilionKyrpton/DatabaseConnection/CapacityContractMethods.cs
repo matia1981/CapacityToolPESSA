@@ -1,6 +1,8 @@
-﻿using PavilionKyrpton.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using PavilionKyrpton.Entities;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,25 +11,73 @@ namespace PavilionKyrpton.DatabaseConnection
 {
     public class CapacityContractMethods : DbConnection
     {
+        
+
         public void SaveCapacityContract(CapacityContract capacityContract)
         {
-            var capacityContractDB = CapacityContracts.Find(capacityContract.CapacityContractId);
+            var capacityContractDB = this.CapacityContracts
+                                    .AsNoTracking()
+                                    .Where(x => x.CapacityContractId == capacityContract.CapacityContractId)
+                                    .FirstOrDefault();
+
 
             if(capacityContractDB == null)
             {
-                CapacityContracts.Add(capacityContract);
+                this.CapacityContracts.Add(capacityContract);
             }
             else
             {
-                CapacityContracts.Update(capacityContract);
+                this.CapacityContracts.Update(capacityContract);
             }
 
-            SaveChanges();
+            this.SaveChanges();            
         }
 
-        public IEnumerable<CapacityContract> GetCapacityContracts()
+        public DataTable GetCapacityContracts()
         {
-            return CapacityContracts.ToList<CapacityContract>();
+            var data = CapacityContracts.ToList<CapacityContract>();
+            var dt = new DataTable();
+                        
+            dt.Columns.Add("CapacityContractId", typeof(string));
+            dt.Columns.Add("Network", typeof(string));
+            dt.Columns.Add("InfrastructureType", typeof(string));
+            dt.Columns.Add("Infrastructure", typeof(string));
+            dt.Columns.Add("ServiceType", typeof(string));
+            dt.Columns.Add("BegTime", typeof(DateTime));
+            dt.Columns.Add("EndTime", typeof(DateTime));
+            dt.Columns.Add("Quantity", typeof(decimal));
+            dt.Columns.Add("Buy_Sell", typeof(string));
+            dt.Columns.Add("Price", typeof(decimal));
+            dt.Columns.Add("TradeDate", typeof(DateTime));
+            dt.Columns.Add("QuantityUnit", typeof(string));
+            dt.Columns.Add("PriceUnit", typeof(string));
+            dt.Columns.Add("Currency", typeof(string));
+            dt.Columns.Add("TimeZone", typeof(string));
+
+            foreach (var item in data)
+            {
+                var newRow = dt.NewRow();
+                
+                newRow["CapacityContractId"] = item.CapacityContractId;
+                newRow["Network"] = item.Network;
+                newRow["InfrastructureType"] = item.InfrastructureType;
+                newRow["Infrastructure"] = item.Infrastructure;
+                newRow["ServiceType"] = item.ServiceType;
+                newRow["BegTime"] = item.BegTime;
+                newRow["EndTime"] = item.EndTime;
+                newRow["Quantity"] = item.Quantity;
+                newRow["Buy_Sell"] = item.Buy_Sell;
+                newRow["Price"] = item.Price;
+                newRow["TradeDate"] = item.TradeDate;
+                newRow["QuantityUnit"] = item.QuantityUnit;
+                newRow["PriceUnit"] = item.PriceUnit;
+                newRow["Currency"] = item.Currency;
+                newRow["TimeZone"] = item.TimeZone;
+         
+                dt.Rows.Add(newRow);
+            }
+
+            return dt;
         }
 
         public void DeleteCapacityContract(CapacityContract capacityContract)

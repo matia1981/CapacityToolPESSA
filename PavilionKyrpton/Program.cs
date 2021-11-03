@@ -18,6 +18,9 @@ namespace PavilionKyrpton
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
+
+            
+
             Application.Run(new MainForm());
 
             

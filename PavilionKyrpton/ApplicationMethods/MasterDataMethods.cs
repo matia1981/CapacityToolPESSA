@@ -22,23 +22,28 @@ namespace PavilionKyrpton.ApplicationMethods
             dt.Columns.Add("AppLocation", typeof(string));
             dt.Columns.Add("EurorunnerLocation", typeof(string));
             dt.Columns.Add("EnagasLocation", typeof(string));
-            dt.Columns.Add("PrisamLocation", typeof(string));
-
-
+            dt.Columns.Add("Network", typeof(string));
+            dt.Columns.Add("Location_Type", typeof(string));
+            dt.Columns.Add("Temperature", typeof(string));
+            dt.Columns.Add("Timezone", typeof(string));
+            
             //if (locations.Count == 0)
             //{
             //    var newRow = dt.NewRow();
             //    dt.Rows.Add(newRow);
             //}
 
-            foreach(var item in locations)
+            foreach (var item in locations)
             {
                 var newRow = dt.NewRow();
                 newRow["Id"] = item.Id;
                 newRow["AppLocation"] = item.AppLocation;
                 newRow["EurorunnerLocation"] = item.EurorunnerLocation;
                 newRow["EnagasLocation"] = item.EnagasLocation;
-                newRow["PrisamLocation"] = item.PrisamLocation;
+                newRow["Network"] = item.Network;
+                newRow["Location_Type"] = item.Location_Type;
+                newRow["Temperature"] = item.Temperature;
+                newRow["Timezone"] = item.Timezone;
 
                 dt.Rows.Add(newRow);
             }
@@ -65,7 +70,10 @@ namespace PavilionKyrpton.ApplicationMethods
                     AppLocation = row["AppLocation"].ToString(),
                     EurorunnerLocation = row["EurorunnerLocation"].ToString(),
                     EnagasLocation = row["EnagasLocation"].ToString(),
-                    PrisamLocation = row["EnagasLocation"].ToString()
+                    Network = row["Network"].ToString(),
+                    Location_Type = row["Location_Type"].ToString(),
+                    Temperature = row["Temperature"].ToString(),
+                    Timezone = row["Timezone"].ToString()
                 };
 
                 _dbConnection.Locations.Add(location);

@@ -18,8 +18,13 @@ namespace PavilionKyrpton.Entities
 
         public string EnagasLocation { get; set; }
 
-        public string PrisamLocation { get; set; }
-        
+        public string Network { get; set; }
+
+        public string Location_Type { get; set; }
+
+        public string Temperature { get; set; }
+
+        public string Timezone { get; set; }       
 
 
     }

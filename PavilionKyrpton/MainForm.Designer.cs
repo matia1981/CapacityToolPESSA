@@ -62,6 +62,7 @@ namespace PavilionKyrpton
             this.detailsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.deleteItemMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.generateXMLMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.generateXMLAllMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.databaseSource = new System.Windows.Forms.BindingSource(this.components);
             this.navigatorText = new ComponentFactory.Krypton.Toolkit.KryptonTextBox();
             this.kryptonDataGridView1 = new ComponentFactory.Krypton.Toolkit.KryptonDataGridView();
@@ -159,7 +160,7 @@ namespace PavilionKyrpton
             // dataBaseMenu
             // 
             this.dataBaseMenu.Name = "dataBaseMenu";
-            this.dataBaseMenu.Size = new System.Drawing.Size(180, 22);
+            this.dataBaseMenu.Size = new System.Drawing.Size(122, 22);
             this.dataBaseMenu.Text = "Database";
             // 
             // HelpMenu
@@ -281,18 +282,20 @@ namespace PavilionKyrpton
             // 
             // contextMenuStrip1
             // 
+            this.contextMenuStrip1.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.detailsMenuItem,
             this.deleteItemMenu,
-            this.generateXMLMenuItem});
+            this.generateXMLMenuItem,
+            this.generateXMLAllMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(149, 70);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(228, 92);
             // 
             // detailsMenuItem
             // 
             this.detailsMenuItem.Image = global::PavilionKyrpton.Properties.Resources.preview;
             this.detailsMenuItem.Name = "detailsMenuItem";
-            this.detailsMenuItem.Size = new System.Drawing.Size(148, 22);
+            this.detailsMenuItem.Size = new System.Drawing.Size(227, 22);
             this.detailsMenuItem.Text = "See Details";
             this.detailsMenuItem.Click += new System.EventHandler(this.DetailsMenu_Click);
             // 
@@ -300,16 +303,24 @@ namespace PavilionKyrpton
             // 
             this.deleteItemMenu.Image = global::PavilionKyrpton.Properties.Resources.close__2_;
             this.deleteItemMenu.Name = "deleteItemMenu";
-            this.deleteItemMenu.Size = new System.Drawing.Size(148, 22);
+            this.deleteItemMenu.Size = new System.Drawing.Size(227, 22);
             this.deleteItemMenu.Text = "Delete Item";
             // 
             // generateXMLMenuItem
             // 
             this.generateXMLMenuItem.Image = global::PavilionKyrpton.Properties.Resources.xml_file_format_symbol;
             this.generateXMLMenuItem.Name = "generateXMLMenuItem";
-            this.generateXMLMenuItem.Size = new System.Drawing.Size(148, 22);
+            this.generateXMLMenuItem.Size = new System.Drawing.Size(227, 22);
             this.generateXMLMenuItem.Text = "Generate XML";
             this.generateXMLMenuItem.Click += new System.EventHandler(this.generateXMLMenuItem_Click);
+            // 
+            // generateXMLAllMenuItem
+            // 
+            this.generateXMLAllMenuItem.Image = global::PavilionKyrpton.Properties.Resources.xml_file_format_symbol;
+            this.generateXMLAllMenuItem.Name = "generateXMLAllMenuItem";
+            this.generateXMLAllMenuItem.Size = new System.Drawing.Size(227, 22);
+            this.generateXMLAllMenuItem.Text = "Generate XML (All Contracts)";
+            this.generateXMLAllMenuItem.Click += new System.EventHandler(this.generateXMLAllMenuItem_Click);
             // 
             // navigatorText
             // 
@@ -321,6 +332,8 @@ namespace PavilionKyrpton
             // 
             // kryptonDataGridView1
             // 
+            this.kryptonDataGridView1.AllowUserToAddRows = false;
+            this.kryptonDataGridView1.AllowUserToDeleteRows = false;
             this.kryptonDataGridView1.AllowUserToOrderColumns = true;
             this.kryptonDataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.kryptonDataGridView1.ContextMenuStrip = this.contextMenuStrip1;
@@ -413,6 +426,7 @@ namespace PavilionKyrpton
         private System.Windows.Forms.Splitter splitter1;
         private System.Windows.Forms.ToolStripMenuItem ServiceTypeMenu;
         private System.Windows.Forms.ToolStripButton addRowButton;
+        private System.Windows.Forms.ToolStripMenuItem generateXMLAllMenuItem;
     }
 }
 

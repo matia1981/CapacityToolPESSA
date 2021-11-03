@@ -13,8 +13,8 @@ namespace PavilionKyrpton.DatabaseConnection
     {
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)          
-          => options.UseSqlite(ConfigurationManager.ConnectionStrings["database"].ConnectionString);
-         //=> options.UseSqlite(@"Data Source=C:\Pavilion\capacitymgt.db");
+         // => options.UseSqlite(ConfigurationManager.ConnectionStrings["database"].ConnectionString);
+         => options.UseSqlite(@"Data Source=C:\Pavilion\capacitymgt.db");
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

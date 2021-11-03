@@ -4,6 +4,7 @@ using PavilionKyrpton.DatabaseConnection;
 using PavilionKyrpton.Entities;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data;
 using System.IO;
 using System.Linq;
@@ -30,6 +31,8 @@ namespace PavilionKyrpton.ExcelLoaders
 
             if(dialog.ShowDialog() == DialogResult.OK)
             {
+                string contractID = "";
+
                 try
                 {
                     var inputFile = new FileInfo(dialog.FileName);
@@ -57,13 +60,33 @@ namespace PavilionKyrpton.ExcelLoaders
                             DataTableCollection table = result.Tables;
                             DataTable resultTable = table[SHEET_NAME];
 
+
+
                             foreach(DataRow itemRow in resultTable.Rows)
                             {
                                 try
                                 {
                                     EnagasFile eFile = new EnagasFile();
+                                    
+                                    if(itemRow[24].ToString() == "Baja")
+                                    {
+                                        var deleteValue = dbConnection
+                                                            .CapacityContracts
+                                                            .Where(x => x.CapacityContractId.Equals(itemRow[0].ToString())).FirstOrDefault();
+
+                                        if (deleteValue != null)
+                                        {
+                                            CapacityContractMethods deleteMethods = new CapacityContractMethods();
+                                            deleteMethods.DeleteCapacityContract(deleteValue);
+                                        }                                        
+
+                                    }
+                                        
+
 
                                     eFile.File = _enagasFile;
+                                    contractID = itemRow[0].ToString();
+
                                     eFile.CodigoContrato = itemRow[0].ToString();
                                     eFile.CodigoAdenda = itemRow[1].ToString();
                                     eFile.FechaFormalizacion = Convert.ToDateTime(itemRow[2]);
@@ -105,9 +128,9 @@ namespace PavilionKyrpton.ExcelLoaders
                                     //eFile.Prima_Value = Convert.ToDecimal(itemRow[32]);
                                     eFile.Prima_Units = itemRow[33].ToString();
 
-                                    var existValue = dbConnection.EnagasFiles.Where(x => x.CodigoContrato.Equals(eFile.CodigoContrato)).FirstOrDefault();
+                                    var existValue = dbConnection.EnagasFiles.Where(x => x.CodigoContrato.Equals(eFile.CodigoContrato)).Any();
 
-                                    if(existValue != null)
+                                    if(existValue)
                                     {
                                         dbConnection.EnagasFiles.Update(eFile);
                                     }
@@ -117,6 +140,7 @@ namespace PavilionKyrpton.ExcelLoaders
                                     }
 
                                     _enagasFile.Records += 1;
+                                    dbConnection.SaveChanges();
 
                                     //Add the contract to the database
                                     CapacityContract capacityContract = new CapacityContract()
@@ -143,7 +167,14 @@ namespace PavilionKyrpton.ExcelLoaders
                                 }
                                 catch(Exception ex)
                                 {
-                                    LoggingClass.WriteLog(ex.ToString(), "ERROR", "loadEnagasFile");
+                                    if(ConfigurationManager.AppSettings["eurorunnerfolder"] == "DEBUG")
+                                    {
+                                        LoggingClass.WriteLog(contractID, "******************", "loadEnagasFile");
+                                        LoggingClass.WriteLog(ex.Message, "ERROR", "loadEnagasFile");
+                                        LoggingClass.WriteLog(contractID, "******************", "loadEnagasFile");
+                                    }
+
+                                    
                                 }
                             }
 

@@ -41,6 +41,13 @@ namespace PavilionKyrpton
                 case "locations":
                     this.kryptonDataGridView1.DataSource = MasterDataMethods.getLocations();
                     break;
+                case "capacitycontracts":
+                    CapacityContractMethods contractMethods = new CapacityContractMethods();
+                    this.kryptonDataGridView1.DataSource = contractMethods.GetCapacityContracts();
+                    this.kryptonDataGridView1.AllowUserToOrderColumns = true;
+                    this.kryptonDataGridView1.AllowUserToResizeColumns = true;
+                    break;
+
 
             }
         }
@@ -190,14 +197,20 @@ namespace PavilionKyrpton
 
             switch (viewSelected)
             {
-                case "enagasload":
-                    var itemId = Convert.ToInt32(this.kryptonDataGridView1.SelectedRows[0].Cells["Id"].Value);
-                    MessageBox.Show("Generating XML file", "Info", MessageBoxButtons.OK);
+                case "capacitycontracts":
+
+                    var listOfContract = new List<string>();                   
+
+                    foreach (DataGridViewRow row in this.kryptonDataGridView1.SelectedRows)
+                    {
+                        listOfContract.Add(row.Cells[0].Value.ToString());
+                    }
 
                     EurorunnerMethods eurorunnerMethods = new EurorunnerMethods(new DbConnection());
-                    eurorunnerMethods.GenerateXMLFile(itemId);
+                    eurorunnerMethods.GenerateXMLFile(listOfContract.ToList<string>());
+                    MessageBox.Show("Generating XML file", "Info", MessageBoxButtons.OK);
+                    break;                    
 
-                    break;
                 case "users":
 
                     break;
@@ -206,9 +219,12 @@ namespace PavilionKyrpton
 
         private void capacityContractsMenu_Click(object sender, EventArgs e)
         {
-            ContractList cListForm = new ContractList();
-            cListForm.Visible = true;
-            cListForm.Activate();
+            //ContractList cListForm = new ContractList();
+            //cListForm.Visible = true;
+            //cListForm.Activate();
+
+            ViewMethods.viewSelected = "capacitycontracts";
+            this.navigatorText.Text = "Capacity Contracts";
         }
 
         private void capacitybydayMenu_Click(object sender, EventArgs e)
@@ -246,6 +262,41 @@ namespace PavilionKyrpton
         {
             ViewMethods.viewSelected = "prismaauction";
             this.navigatorText.Text = "Load Data >> Prisma Auction";
+        }
+
+        private void generateXMLAllMenuItem_Click(object sender, EventArgs e)
+        {
+            var viewSelected = ViewMethods.viewSelected;
+
+            switch (viewSelected)
+            {
+                case "capacitycontracts":
+
+                    var listOfContract = new List<string>();
+
+                    foreach (DataGridViewRow row in this.kryptonDataGridView1.Rows)
+                    {
+                        try
+                        {
+                            listOfContract.Add(row.Cells[0].Value.ToString());
+                        }
+                        catch (Exception ex)
+                        {
+                            LoggingClass.WriteLog(ex.Message, "ERROR", "generateXMLMenuItem_Click");
+                        }
+                    }
+
+                    MessageBox.Show("Generating XML file", "Info", MessageBoxButtons.OK);
+
+                    EurorunnerMethods eurorunnerMethods = new EurorunnerMethods(new DbConnection());
+                    eurorunnerMethods.GenerateXMLFile(listOfContract.ToList<string>());
+
+                    break;
+
+                case "users":
+
+                    break;
+            }
         }
     }
 }

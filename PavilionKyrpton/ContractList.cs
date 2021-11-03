@@ -16,7 +16,7 @@ namespace PavilionKyrpton
     {
         public ContractList()
         {
-            InitializeComponent();
+            InitializeComponent();            
         }
         
         private void RetrieveDataMenuItem_Click(object sender, EventArgs e)
