@@ -26,6 +26,12 @@ namespace PavilionKyrpton.Entities
 
         public string Timezone { get; set; }       
 
+        public string EurorunnerFormat { get; set; }
+
+        public string Injection_Withdrawal { get; set; }
+
+        public string Direction { get; set; }
+
 
     }
 }

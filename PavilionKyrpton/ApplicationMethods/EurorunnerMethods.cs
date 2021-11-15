@@ -24,6 +24,7 @@ namespace PavilionKyrpton.ApplicationMethods
        public void GenerateXMLFile(List<string> items)
         {
             eurorunnerDataSet dInput = new eurorunnerDataSet();
+            eurorunner_contract_details dOutput = new eurorunner_contract_details();
 
             foreach (var row in items)
             {
@@ -35,43 +36,72 @@ namespace PavilionKyrpton.ApplicationMethods
                                 .Where(x => x.EnagasLocation == rowDB.Infrastructura)
                                 .FirstOrDefault();
 
+                switch(location.EurorunnerFormat)
+                {
+                    case "CAPACITY":
 
-                var newRow = dInput.capacity_trade.Newcapacity_tradeRow();
+                        var newRow = dInput.capacity_trade.Newcapacity_tradeRow();
 
-                newRow.amount =      rowDB.QTotalContratada_Volume;
-                newRow.unit =        rowDB.QTotalContratada_Units.Substring(0, 3);
-                newRow.amount_type = "D";
+                        newRow.amount =     Math.Abs(rowDB.QTotalContratada_Volume);
+                        newRow.unit =       rowDB.QTotalContratada_Units.Substring(0, 3);
+                        newRow.amount_type = "D";
 
-                newRow.buy_sell    = "B";                
-                newRow.category = "T";
-                newRow.code = rowDB.CodigoContrato;
+                        newRow.buy_sell = rowDB.QTotalContratada_Volume > 0 ? "B" : "S";
+                        newRow.category = "T";
+                        newRow.code = rowDB.CodigoContrato;
 
-                newRow.direction = FlowDirectionGenerationByRow(rowDB);
+                        newRow.direction = location.Direction;// FlowDirectionGenerationByRow(rowDB);
 
-                newRow.firmness = "F";
-                newRow.location = location.EurorunnerLocation;
-                newRow.location_type = location.Location_Type;
-                newRow.network = location.Network;
-                
-                newRow.shipper = rowDB.Comercializador;
-                newRow.start_dts = rowDB.InicioContracto;
-                newRow.end_dts = rowDB.FinContracto;
+                        newRow.firmness = "F";
+                        newRow.location = location.EurorunnerLocation;
+                        newRow.location_type = location.Location_Type;
+                        newRow.network = location.Network;
 
-                newRow.temperature = location.Temperature;
-                newRow.time_zone = location.Timezone;
+                        newRow.shipper = rowDB.Comercializador;
+                        newRow.start_dts = rowDB.InicioContracto;
+                        newRow.end_dts = rowDB.FinContracto;
 
-                dInput.capacity_trade.Rows.Add(newRow);
+                        newRow.temperature = location.Temperature;
+                        newRow.time_zone = location.Timezone;
+
+                        dInput.capacity_trade.Rows.Add(newRow);
+                        break;
+
+                    case "CONTRACT_CAPACITY":
+                        var newCapacityRow = dOutput.contract_capacity_trade.Newcontract_capacity_tradeRow();
+
+                        newCapacityRow.amount = Math.Abs(rowDB.QTotalContratada_Volume);
+                        newCapacityRow.unit = rowDB.QTotalContratada_Units.Substring(0, 3);
+                        newCapacityRow.amount_type = "D";
+
+                        newCapacityRow.code = rowDB.CodigoContrato;
+                        newCapacityRow.contract = rowDB.CodigoContrato;
+
+                        newCapacityRow.location_type = location.Location_Type;
+                        newCapacityRow.location = location.EurorunnerLocation;
+                        newCapacityRow.injection_withdrawal = location.Injection_Withdrawal;
+                        newCapacityRow.temperature = location.Temperature;
+                        newCapacityRow.time_zone = location.Timezone;
+                        
+                        newCapacityRow.start_dts = rowDB.InicioContracto;
+                        newCapacityRow.end_dts = rowDB.FinContracto;
+                        newCapacityRow.buy_sell = rowDB.QTotalContratada_Volume > 0 ? "B" : "S";
+
+                        dOutput.contract_capacity_trade.Rows.Add(newCapacityRow);
+
+                        break;
+                }              
             }
 
             var fileName = System.DateTime.Now.ToFileTime();
-            dInput.WriteXml(ConfigurationManager.AppSettings["eurorunnerfolder"] + @"\" + fileName + ".xml");
+            dInput.WriteXml(ConfigurationManager.AppSettings["eurorunnerfolder"] + @"\" + fileName  +"capacity" + ".xml");
+            dOutput.WriteXml(ConfigurationManager.AppSettings["eurorunnerfolder"] + @"\" + fileName + "capacity_deals" + ".xml");
         }
 
 
-        private void GenerateXMLFileForEnagasFormat(string id)
+        private void GenerateXMLFileForCapacityContracts(List<string> items)
         {
-
-
+           
         }
 
         private string FlowDirectionGenerationByRow(EnagasFile row)

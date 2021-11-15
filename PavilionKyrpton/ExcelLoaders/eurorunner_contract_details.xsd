@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+    <xs:element name="eurorunner_contract_details">
+        <xs:complexType>
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+                <xs:element name="contract_flange_limit">
+                    <xs:complexType>
+                        <xs:attribute name="contract" type="char50" use="required" />
+                        <xs:attribute name="flange" type="char50" use="required" />
+                        <xs:attribute name="limit_type" type="limitType" use="required" />
+                        <xs:attribute name="injection_withdrawal" type="injectionWithdrawalType" use="required" />
+                        <xs:attribute name="amount_type" type="amountType" use="required" />
+                        <xs:attribute name="start_dts" type="gasHourStart" use="required" />
+                        <xs:attribute name="end_dts" type="gasHourStart" use="required" />
+                        <xs:attribute name="time_zone" type="char50" use="required" />
+                        <xs:attribute name="amount" type="amountNonNegative" use="required" />
+                        <xs:attribute name="unit" type="char6" use="required" />
+                        <xs:attribute name="temperature" type="char6" use="optional" />
+                        <xs:attribute name="capacity" type="char50" use="optional" />
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="inventory_limit">
+                    <xs:complexType>
+                        <xs:attribute name="contract" type="char50" use="required" />
+                        <xs:attribute name="limit_type" type="limitType" use="required"/>
+                        <xs:attribute name="start_dts" type="gasHourStart" use="required" />
+                        <xs:attribute name="end_dts" type="gasHourStart" use="required" />
+                        <xs:attribute name="time_zone" type="char50" use="required" />
+                        <xs:attribute name="amount" type="amount" use="required" />
+                        <xs:attribute name="unit" type="char6" use="required" />
+                        <xs:attribute name="temperature" type="char6" use="optional" />
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="inventory_level">
+                    <xs:complexType>
+                        <xs:attribute name="contract" type="char50" use="required" />
+                        <xs:attribute name="instant_dts" type="gasHourStart" use="required" />
+                        <xs:attribute name="time_zone" type="char50" use="required" />
+                        <xs:attribute name="amount" type="amount" use="required" />
+                        <xs:attribute name="unit" type="char6" use="required" />
+                        <xs:attribute name="temperature" type="char6" use="optional" />
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="inventory_adjustment">
+                    <xs:complexType>
+                        <xs:attribute name="contract" type="char50" use="required" />
+                        <xs:attribute name="instant_dts" type="gasHourStart" use="required" />
+                        <xs:attribute name="time_zone" type="char50" use="required" />
+                        <xs:attribute name="amount" type="amount" use="required" />
+                        <xs:attribute name="unit" type="char6" use="required" />
+                        <xs:attribute name="temperature" type="char6" use="optional" />
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="contract_capacity_trade">
+                    <xs:complexType>
+                        <xs:attribute name="code" type="char20" use="optional" />
+                        <xs:attribute name="contract" type="char50" use="required" />
+                        <xs:attribute name="location_type" type="locationType" use="required" />
+                        <xs:attribute name="location" type="char50" use="optional" />
+                        <xs:attribute name="capacity" type="char50" use="optional" />
+                        <xs:attribute name="injection_withdrawal" type="injectionWithdrawalType" use="optional" />
+                        <xs:attribute name="limit_type" type="limitType" use="required" />
+                        <xs:attribute name="category" type="category" use="required" />
+                        <xs:attribute name="unit" type="char6" use="required" />
+                        <xs:attribute name="temperature" type="char6" use="optional" />
+                        <xs:attribute name="time_zone" type="char50" use="required" />
+                        <xs:attribute name="start_dts" type="gasHourStart" use="required" />
+                        <xs:attribute name="end_dts" type="gasHourStart" use="required" />
+                        <xs:attribute name="buy_sell" type="buySell" use="required" />
+                        <xs:attribute name="amount_type" type="amountType" use="optional" />
+                        <xs:attribute name="amount" type="amount" use="required" />
+                        <xs:attribute name="price" type="amount" use="optional" />
+                        <xs:attribute name="trader" type="char50" use="optional" />
+                        <xs:attribute name="comments" type="char50" use="optional" />
+                    </xs:complexType>
+                </xs:element>
+            </xs:choice>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:simpleType name="char6">
+        <xs:restriction base="xs:string">
+            <xs:maxLength value="6"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="char20">
+        <xs:restriction base="xs:string">
+            <xs:maxLength value="20"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="char50">
+        <xs:restriction base="xs:string">
+            <xs:maxLength value="50"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="amount">
+        <xs:restriction base="xs:decimal">
+            <xs:totalDigits value="22"/>
+            <xs:fractionDigits value="12"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="amountNonNegative">
+        <xs:restriction base="xs:decimal">
+            <xs:minInclusive value="0"/>
+            <xs:totalDigits value="22"/>
+            <xs:fractionDigits value="12"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="gasHourStart">
+        <xs:restriction base="xs:dateTime">
+            <xs:pattern value="[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:00:00"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="limitType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="minimum"/>
+            <xs:enumeration value="maximum"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="injectionWithdrawalType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="I"/>
+            <xs:enumeration value="W"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="amountType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="H"/>
+            <xs:enumeration value="D"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="locationType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="C"/>
+            <xs:enumeration value="F"/>
+            <xs:enumeration value="G"/>
+            <xs:enumeration value="I"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="category">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="I"/>
+            <xs:enumeration value="T"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="buySell">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="B"/>
+            <xs:enumeration value="S"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+</xs:schema>

@@ -1,4 +1,6 @@
-﻿using PavilionKyrpton.DatabaseConnection;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using PavilionKyrpton.DatabaseConnection;
 using PavilionKyrpton.Entities;
 using System;
 using System.Collections.Generic;
@@ -12,10 +14,12 @@ namespace PavilionKyrpton.ApplicationMethods
     public static class MasterDataMethods
     {
         private static DbConnection _dbConnection = new DbConnection();
+
         
         public static DataTable getLocations()
         {
-            var locations = _dbConnection.Locations.ToList();
+            
+            var locations = _dbConnection.Locations.AsNoTracking().ToList();
             var dt = new DataTable();
 
             dt.Columns.Add("Id", typeof(int));
@@ -26,7 +30,10 @@ namespace PavilionKyrpton.ApplicationMethods
             dt.Columns.Add("Location_Type", typeof(string));
             dt.Columns.Add("Temperature", typeof(string));
             dt.Columns.Add("Timezone", typeof(string));
-            
+            dt.Columns.Add("EurorunnerFormat", typeof(string));
+            dt.Columns.Add("Injection_Withdrawal", typeof(string));
+            dt.Columns.Add("Direction", typeof(string));
+
             //if (locations.Count == 0)
             //{
             //    var newRow = dt.NewRow();
@@ -45,15 +52,23 @@ namespace PavilionKyrpton.ApplicationMethods
                 newRow["Temperature"] = item.Temperature;
                 newRow["Timezone"] = item.Timezone;
 
+                newRow["EurorunnerFormat"] = item.EurorunnerFormat;
+                newRow["Injection_Withdrawal"] = item.Injection_Withdrawal;
+                newRow["Direction"] = item.Direction;
+
                 dt.Rows.Add(newRow);
-            }
+            }            
             return dt;
         }
 
         public static void updateLocation(Location location)
         {
+            
             _dbConnection.Update(location);
             _dbConnection.SaveChanges();
+            _dbConnection.ChangeTracker.Clear();
+
+            
         }
 
         public static void addLocation(DataTable dInput)
@@ -73,13 +88,39 @@ namespace PavilionKyrpton.ApplicationMethods
                     Network = row["Network"].ToString(),
                     Location_Type = row["Location_Type"].ToString(),
                     Temperature = row["Temperature"].ToString(),
-                    Timezone = row["Timezone"].ToString()
+                    Timezone = row["Timezone"].ToString(),
+                    EurorunnerFormat = row["EurorunnerFormat"].ToString(),
+                    Injection_Withdrawal = row["Injection_Withdrawal"].ToString(),
+                    Direction = row["Direction"].ToString()
                 };
 
-                _dbConnection.Locations.Add(location);
+                var existLocation = _dbConnection.Locations.Where(x => x.Id == Convert.ToInt32(row["Id"])).AsNoTracking().Any();
+
+                if (existLocation && !row.Equals(location))
+                {                    
+                    row.AcceptChanges();         
+                    row.SetModified();
+                    updateLocation(location);
+                    
+                    
+                }
+                else if(existLocation && row.Equals(location))
+                {
+                    continue;
+                }
+                else
+                {
+                    _dbConnection.Locations.Add(location);
+                    _dbConnection.SaveChanges();
+                    _dbConnection.ChangeTracker.Clear();
+                }
+
+        
+
+                
             }
             
-            _dbConnection.SaveChanges();
+            
         }
 
         public static void deleteLocation(int id)

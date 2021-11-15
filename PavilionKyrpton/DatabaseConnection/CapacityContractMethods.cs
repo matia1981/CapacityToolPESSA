@@ -65,7 +65,7 @@ namespace PavilionKyrpton.DatabaseConnection
                 newRow["ServiceType"] = item.ServiceType;
                 newRow["BegTime"] = item.BegTime;
                 newRow["EndTime"] = item.EndTime;
-                newRow["Quantity"] = item.Quantity;
+                newRow["Quantity"] = Math.Abs(item.Quantity);
                 newRow["Buy_Sell"] = item.Buy_Sell;
                 newRow["Price"] = item.Price;
                 newRow["TradeDate"] = item.TradeDate;

@@ -39,7 +39,12 @@ namespace PavilionKyrpton
                     this.kryptonDataGridView1.DataSource = pLoader.RetrieveFilesFromDatabaseByType("PRISMA_AUCTION");
                     break;
                 case "locations":
-                    this.kryptonDataGridView1.DataSource = MasterDataMethods.getLocations();
+
+                    var data = MasterDataMethods.getLocations();
+                    //data.AcceptChanges();
+                    this.kryptonDataGridView1.DataSource = data;
+                    
+                    
                     break;
                 case "capacitycontracts":
                     CapacityContractMethods contractMethods = new CapacityContractMethods();
