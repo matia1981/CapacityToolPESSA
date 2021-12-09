@@ -32,8 +32,16 @@ namespace PavilionKyrpton.ApplicationMethods
                             .Where(x => x.CodigoContrato == row)
                             .FirstOrDefault();
 
+                var existMapping = _db.Locations
+                                .Where(x => x.EnagasLocation == rowDB.Infrastructura && x.Service == rowDB.Servicio)
+                                .Any();
+
+                if (!existMapping)
+                    continue;
+
+
                 var location = _db.Locations
-                                .Where(x => x.EnagasLocation == rowDB.Infrastructura)
+                                .Where(x => x.EnagasLocation == rowDB.Infrastructura && x.Service == rowDB.Servicio)
                                 .FirstOrDefault();
 
                 switch(location.EurorunnerFormat)
@@ -42,17 +50,17 @@ namespace PavilionKyrpton.ApplicationMethods
 
                         var newRow = dInput.capacity_trade.Newcapacity_tradeRow();
 
-                        newRow.amount =     Math.Abs(rowDB.QTotalContratada_Volume);
-                        newRow.unit =       rowDB.QTotalContratada_Units.Substring(0, 3);
-                        newRow.amount_type = "D";
+                        newRow.amount =         Math.Abs(rowDB.QTotalContratada_Volume);
+                        newRow.unit =           rowDB.QTotalContratada_Units.Substring(0, 3);
+                        newRow.amount_type =    "D";
 
-                        newRow.buy_sell = rowDB.QTotalContratada_Volume > 0 ? "B" : "S";
-                        newRow.category = "T";
-                        newRow.code = rowDB.CodigoContrato;
+                        newRow.buy_sell =       rowDB.QTotalContratada_Volume > 0 ? "B" : "S";
+                        newRow.category =       "T";
+                        newRow.code =           rowDB.CodigoContrato;
 
                         newRow.direction = location.Direction;// FlowDirectionGenerationByRow(rowDB);
 
-                        newRow.firmness = "F";
+                        newRow.firmness =       "F";
                         newRow.location = location.EurorunnerLocation;
                         newRow.location_type = location.Location_Type;
                         newRow.network = location.Network;

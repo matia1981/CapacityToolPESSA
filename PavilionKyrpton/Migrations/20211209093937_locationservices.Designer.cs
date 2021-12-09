@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PavilionKyrpton.DatabaseConnection;
 
 namespace PavilionKyrpton.Migrations
 {
     [DbContext(typeof(DbConnection))]
-    partial class DbConnectionModelSnapshot : ModelSnapshot
+    [Migration("20211209093937_locationservices")]
+    partial class locationservices
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

@@ -33,6 +33,7 @@ namespace PavilionKyrpton.ApplicationMethods
             dt.Columns.Add("EurorunnerFormat", typeof(string));
             dt.Columns.Add("Injection_Withdrawal", typeof(string));
             dt.Columns.Add("Direction", typeof(string));
+            dt.Columns.Add("Service", typeof(string));
 
             //if (locations.Count == 0)
             //{
@@ -55,6 +56,7 @@ namespace PavilionKyrpton.ApplicationMethods
                 newRow["EurorunnerFormat"] = item.EurorunnerFormat;
                 newRow["Injection_Withdrawal"] = item.Injection_Withdrawal;
                 newRow["Direction"] = item.Direction;
+                newRow["Service"] = item.Service;
 
                 dt.Rows.Add(newRow);
             }            
@@ -91,7 +93,8 @@ namespace PavilionKyrpton.ApplicationMethods
                     Timezone = row["Timezone"].ToString(),
                     EurorunnerFormat = row["EurorunnerFormat"].ToString(),
                     Injection_Withdrawal = row["Injection_Withdrawal"].ToString(),
-                    Direction = row["Direction"].ToString()
+                    Direction = row["Direction"].ToString(),
+                    Service = row["Service"].ToString()
                 };
 
                 var existLocation = _dbConnection.Locations.Where(x => x.Id == Convert.ToInt32(row["Id"])).AsNoTracking().Any();

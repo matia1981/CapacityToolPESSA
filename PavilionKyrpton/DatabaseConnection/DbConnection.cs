@@ -14,8 +14,8 @@ namespace PavilionKyrpton.DatabaseConnection
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)          
           => options.UseSqlite(ConfigurationManager.ConnectionStrings["database"].ConnectionString)
-            .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
-        // => options.UseSqlite(@"Data Source=C:\Pavilion\capacitymgt.db");
+          .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+         //=> options.UseSqlite(@"Data Source=C:\Pavilion\capacitymgt.db");
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

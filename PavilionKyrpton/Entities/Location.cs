@@ -32,6 +32,8 @@ namespace PavilionKyrpton.Entities
 
         public string Direction { get; set; }
 
+        public string Service { get; set; }
+
 
     }
 }
